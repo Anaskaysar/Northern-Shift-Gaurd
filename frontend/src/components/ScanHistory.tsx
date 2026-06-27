@@ -16,7 +16,7 @@ export default function ScanHistory({ scans, loading, onRefresh }: Props) {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            TiDB audit log
+            SQLite audit log
           </p>
           <h2 className="mt-1 text-3xl font-semibold">Scan history</h2>
         </div>

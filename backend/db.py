@@ -54,6 +54,28 @@ def _init_table(engine):
             )
         """))
         conn.commit()
+        _migrate_scans_table(conn)
+
+
+def _migrate_scans_table(conn):
+    """Add columns introduced after initial schema (CREATE IF NOT EXISTS does not alter)."""
+    if not str(conn.engine.url).startswith("sqlite"):
+        return
+    existing = {
+        row[1]
+        for row in conn.execute(text("PRAGMA table_info(scans)")).fetchall()
+    }
+    for col, col_type in [
+        ("zone_id", "TEXT"),
+        ("zone_name", "TEXT"),
+        ("zone_overall", "TEXT"),
+        ("zone_json", "TEXT"),
+        ("provider_vision", "TEXT"),
+        ("provider_nemotron", "TEXT"),
+    ]:
+        if col not in existing:
+            conn.execute(text(f"ALTER TABLE scans ADD COLUMN {col} {col_type}"))
+    conn.commit()
 
 
 def save_scan(result: AnalyzeResponse) -> int:
@@ -90,7 +112,10 @@ def save_scan(result: AnalyzeResponse) -> int:
             "created_at": ts,
         })
         conn.commit()
-        return r.lastrowid
+        row_id = r.lastrowid
+        if not row_id:
+            row_id = conn.execute(text("SELECT last_insert_rowid()")).scalar()
+        return int(row_id or 0)
 
 
 def get_recent_scans(limit: int = 20) -> list[ScanSummary]:
