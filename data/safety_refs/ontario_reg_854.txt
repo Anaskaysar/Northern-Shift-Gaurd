@@ -1,0 +1,57 @@
+SOURCE: Ontario Regulation 854 — Mines and Mining Plants
+URL: https://www.ontario.ca/laws/regulation/900854
+Jurisdiction: Ontario, Canada
+
+--- PERSONAL PROTECTIVE EQUIPMENT ---
+
+Section 79 — High-Visibility Apparel
+(1) An employer shall ensure that a worker who is exposed to the hazard of being struck by a vehicle or moving equipment wears a garment that:
+  (a) covers at least the upper body
+  (b) is fluorescent blaze orange, fluorescent yellow-green, or fluorescent red in colour
+  (c) has retro-reflective material in a pattern that encircles the torso
+
+Section 81 — Head Protection
+(1) An employer shall ensure that a worker in an area where there is a risk of head injury wears head protection that:
+  (a) is a safety helmet (hard hat) meeting CSA Standard Z94.1
+  (b) is properly fitted and worn correctly
+(2) No worker shall enter an underground mine, open pit, or active work zone without approved head protection.
+(3) Hard hats must be replaced if cracked, damaged, or past the manufacturer's service life.
+
+Section 83 — Eye and Face Protection
+Workers shall wear appropriate eye protection when exposed to:
+  - Flying particles, dust, or debris
+  - Hazardous chemical splashes
+  - Welding or cutting operations
+
+Section 85 — Foot Protection
+Workers in areas where there is a risk of foot injury shall wear CSA-approved safety footwear with:
+  - Steel or composite toe caps
+  - Puncture-resistant soles where applicable
+
+--- FATIGUE MANAGEMENT ---
+
+Section 32 — Fitness for Work
+(1) No worker shall work in a mine or mining plant if the worker's ability to perform work safely is impaired by fatigue, illness, or other cause.
+(2) A supervisor who becomes aware that a worker may be impaired by fatigue shall:
+  (a) remove the worker from safety-critical duties
+  (b) ensure the worker is assessed before reassignment to equipment operation
+
+Section 10 — Supervisor Responsibilities
+A supervisor shall ensure that:
+  (a) the measures and procedures prescribed by this Regulation are carried out in the workplace
+  (b) every worker under the supervisor's authority works in compliance with this Regulation
+  (c) workers showing signs of fatigue or impairment are not assigned to operate mobile equipment or work in areas with moving machinery
+
+--- ENFORCEMENT ---
+
+Violations of Ontario Regulation 854 can result in:
+  - Stop-work orders issued by a Ministry of Labour inspector
+  - Fines up to $500,000 per offence (individuals) or $2,000,000 (corporations) under the Occupational Health and Safety Act
+  - Director's orders requiring corrective action
+
+--- PRACTICAL SUMMARY FOR SHIFT SUPERVISORS ---
+
+Before every shift, supervisors must confirm:
+1. HARD HAT: Every worker entering an active area must have a properly fitted, undamaged hard hat. Missing or damaged hard hat = stop-work, do not allow entry.
+2. HI-VIS VEST: Any worker near mobile equipment or in active zones must wear a fluorescent high-visibility vest or jacket. Missing vest = do not allow floor access until corrected.
+3. FATIGUE: Workers showing visible fatigue signs (difficulty keeping eyes open, slurred speech, slowed reactions, head drooping) must be assessed. Do not assign to equipment operation. This is a supervisor judgment call — not a medical diagnosis.

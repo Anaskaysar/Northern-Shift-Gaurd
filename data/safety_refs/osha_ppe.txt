@@ -1,0 +1,7 @@
+OSHA General PPE Guidance (Reference Summary)
+
+- Employers must ensure appropriate PPE is used when workplace hazards cannot be eliminated through engineering or administrative controls.
+- Head protection is required where there is potential for injury from falling objects or fixed hazards.
+- High-visibility apparel improves worker conspicuity in environments with vehicle movement.
+- Document safety observations and corrective actions for audit purposes.
+- Missing critical PPE near operating machinery should trigger immediate stop-work until corrected.

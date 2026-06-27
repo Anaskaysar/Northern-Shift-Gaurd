@@ -1,0 +1,9 @@
+{
+  "replicate_model": "yorickvp/llava-13b:b5f6212d032508382d61ff00469ddda3e32fd8a0755a17f6664032f16c9a0a07",
+  "nemotron_model": "nvidia/llama-3.1-nemotron-70b-instruct",
+  "confidence_thresholds": {
+    "fatigue_high": 0.8,
+    "fatigue_medium": 0.5
+  },
+  "notes": "Updated from notebook after prompt tuning — see notebooks/northern_shift_guard.ipynb"
+}

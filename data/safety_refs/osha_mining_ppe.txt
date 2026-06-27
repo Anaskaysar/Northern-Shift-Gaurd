@@ -1,0 +1,72 @@
+SOURCE: OSHA — Mining Safety and Health Administration, PPE Requirements
+URL: https://www.osha.gov/mining
+Jurisdiction: United States Federal (reference standard for Ontario operations)
+
+--- HEAD PROTECTION (29 CFR 1910.135 / MSHA 30 CFR 56.15001) ---
+
+Hard hats are required:
+- In all areas where there is a potential for objects to fall from above
+- Near overhead work, hoisting operations, drilling, blasting
+- In underground mine entries and active stopes
+- Around mobile equipment and conveyor systems
+
+Hard hat standards: ANSI/ISEA Z89.1 (US) or CSA Z94.1 (Canada)
+- Class E (electrical): for areas with electrical hazards
+- Class G (general): standard mine site requirement
+- Hard hats must be inspected before each shift; retire if cracked, dented, or showing UV degradation
+
+--- HIGH-VISIBILITY / REFLECTIVE APPAREL (MSHA 30 CFR 56.14132) ---
+
+High-visibility clothing required for:
+- All workers in areas where mobile equipment operates
+- Surface mine haulage roads, active open pits, processing plants
+- Any area where line-of-sight with equipment operators cannot be guaranteed
+
+Standard: ANSI/ISEA 107 Class 2 or 3
+- Fluorescent yellow-green, orange-red, or red
+- Retroreflective tape in X or H pattern on torso and shoulders
+- Vest, jacket, or coverall — torso coverage required
+
+--- EYE PROTECTION ---
+
+Required when: drilling, blasting, grinding, welding, exposure to chemicals or flying particles
+Standard: ANSI Z87.1
+
+--- FATIGUE AND IMPAIRMENT ---
+
+MSHA 30 CFR 56.20005 — Physical and Mental Condition
+"Persons shall not perform work if their physical or mental condition is such as to endanger themselves or others."
+
+MSHA guidance on fatigue in mining:
+- Extended shifts and rotating schedules are primary fatigue contributors
+- Supervisors are responsible for assessing worker fitness at shift start
+- Workers should not operate haul trucks, LHDs, or other mobile equipment if showing fatigue signs
+- Fatigue is a leading contributing factor in mining equipment accidents
+
+Signs of fatigue to watch for:
+- Difficulty keeping eyes open or frequent eye-rubbing
+- Head nodding or drooping
+- Delayed responses to questions
+- Reduced coordination or slowed movement
+- Irritability or mood changes
+
+--- PENALTY STRUCTURE ---
+
+MSHA significant-and-substantial (S&S) violations for PPE non-compliance:
+- First violation: $250–$5,000
+- Unwarrantable failure: up to $70,000 per violation
+- Pattern of violations: potential mine closure order
+
+--- SUPERVISOR QUICK REFERENCE ---
+
+STOP WORK triggers:
+- Worker entering active area without hard hat
+- Worker near mobile equipment without hi-vis vest
+
+MONITOR / INTERVENE triggers:
+- Worker showing fatigue cues before equipment operation
+- Damaged or non-compliant PPE (worn but inadequate)
+
+DOCUMENT:
+- All PPE non-compliance incidents must be logged in the shift record
+- Fatigue assessments should note observable indicators, not diagnose medically

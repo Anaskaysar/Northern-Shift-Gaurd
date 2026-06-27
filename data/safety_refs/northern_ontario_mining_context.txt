@@ -1,0 +1,59 @@
+SOURCE: Northern Ontario Mining Safety Context
+Compiled from: Ontario Mining Health, Safety and Prevention Review (2015), WSIB Mining Sector Guidelines, OMA (Ontario Mining Association) best practices
+
+--- NORTHERN ONTARIO MINING CONTEXT ---
+
+Northern Ontario (the "Northern Shield" region including Sudbury, Timmins, Thunder Bay, Kirkland Lake) is home to some of Canada's most significant mining operations:
+- Nickel, copper, zinc, gold, and platinum group metals
+- Major operators: Vale, Glencore, Barrick, Newmont, Kinross
+- Mix of underground hard rock and open pit surface operations
+- Workforce: aging — significant retirement wave underway, creating experience gaps
+
+--- KEY SAFETY CHALLENGES ---
+
+1. New Worker Risk
+- Northern Ontario mines are onboarding new workers at high rates to replace retirees
+- New workers have significantly higher injury rates in the first 6 months
+- PPE compliance is highest-priority for new workers who may not have formed habits
+
+2. Shift Rotation and Fatigue
+- Many operations run 12-hour rotating shifts (days/nights)
+- 4-day on / 4-day off or 7-on / 7-off schedules common
+- Night shift workers and workers transitioning from day to night have highest fatigue risk
+- Remote fly-in / fly-out camps increase fatigue accumulation
+
+3. Mobile Equipment Hazards
+- Mobile equipment (haul trucks, LHDs, scooptrams, jumbo drills) is the leading cause of fatalities
+- Hi-vis vest non-compliance near mobile equipment is the most common critical PPE violation
+- Pedestrian-vehicle interaction is the #1 fatality risk on surface mine sites
+
+4. Underground vs Surface PPE
+- Underground: hard hat mandatory, lamp on hard hat, self-rescuer device
+- Surface: hard hat + hi-vis in active zones; fire-resistant coveralls near processing
+- Both: safety footwear, eye protection when required by task
+
+--- WSIB (Workplace Safety and Insurance Board) REQUIREMENTS ---
+
+Ontario employers must:
+- Document all PPE non-compliance incidents
+- Provide PPE training at hire and annually
+- Maintain inspection records for PPE
+- Report lost-time injuries related to PPE failure within 3 days
+
+WSIB mining sector injury rates (2022 data):
+- Underground metal mining: 2.8 injuries per 100 workers (above provincial average)
+- Surface metal mining: 1.9 injuries per 100 workers
+- Most common injury types: slips/trips/falls (34%), struck by object (22%), overexertion (18%)
+
+--- NORTHERN SHIFT CONTEXT FOR AI SCREENING ---
+
+For AI-based shift-start screening in Northern Ontario:
+- Priority 1: Hard hat + hi-vis vest (regulatory, stop-work if missing)
+- Priority 2: Visible fatigue cues (supervisor judgment, not medical — but critical for mobile equipment operators)
+- Priority 3: Other PPE (task-specific — eye, foot, hand protection checked by task assignment)
+
+Shift supervisor decision framework:
+- STOP WORK: Missing hard hat or hi-vis in active zone (Ontario Reg 854 s.79, s.81)
+- INTERVENE: PPE unclear or high fatigue — verify before floor access
+- MONITOR: Moderate fatigue cues — increased check-ins, no solo equipment operation
+- CLEAR: All PPE present, no fatigue indicators — proceed with normal shift
