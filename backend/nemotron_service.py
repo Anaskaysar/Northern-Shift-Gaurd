@@ -19,7 +19,7 @@ def load_safety_context() -> str:
     return "\n\n".join(chunks) if chunks else "Use standard mine-site PPE and fatigue screening policies."
 
 
-def reason_mock(vision: VisionAnalysis) -> NemotronAction:
+def reason_mock(vision: VisionAnalysis, zone_context: str = "") -> NemotronAction:
     if vision.ppe.hard_hat == "fail":
         return NemotronAction(
             priority="stop_work",
@@ -60,14 +60,16 @@ def reason_mock(vision: VisionAnalysis) -> NemotronAction:
     )
 
 
-def reason_nvidia(vision: VisionAnalysis) -> NemotronAction:
-    settings = get_settings()
-    safety_context = load_safety_context()
-    payload = {
+def _build_payload(vision: VisionAnalysis, zone_context: str) -> dict:
+    return {
         "vision_evidence": vision.model_dump(),
-        "safety_reference_context": safety_context,
+        "zone_context": zone_context,
+        "safety_reference_context": load_safety_context(),
     }
 
+
+def reason_nvidia(vision: VisionAnalysis, zone_context: str = "") -> NemotronAction:
+    settings = get_settings()
     with httpx.Client(timeout=60.0) as client:
         response = client.post(
             "https://integrate.api.nvidia.com/v1/chat/completions",
@@ -79,10 +81,7 @@ def reason_nvidia(vision: VisionAnalysis) -> NemotronAction:
                 "model": "nvidia/nemotron-mini-4b-instruct",
                 "messages": [
                     {"role": "system", "content": NEMOTRON_SYSTEM_PROMPT},
-                    {
-                        "role": "user",
-                        "content": json.dumps(payload),
-                    },
+                    {"role": "user", "content": json.dumps(_build_payload(vision, zone_context))},
                 ],
                 "temperature": 0.2,
                 "max_tokens": 600,
@@ -94,26 +93,17 @@ def reason_nvidia(vision: VisionAnalysis) -> NemotronAction:
         return NemotronAction(**data)
 
 
-def reason_openai_fallback(vision: VisionAnalysis) -> NemotronAction:
+def reason_openai_fallback(vision: VisionAnalysis, zone_context: str = "") -> NemotronAction:
     settings = get_settings()
     if not settings.openai_api_key:
-        return reason_mock(vision)
+        return reason_mock(vision, zone_context)
 
     client = OpenAI(api_key=settings.openai_api_key)
-    safety_context = load_safety_context()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": NEMOTRON_SYSTEM_PROMPT},
-            {
-                "role": "user",
-                "content": json.dumps(
-                    {
-                        "vision_evidence": vision.model_dump(),
-                        "safety_reference_context": safety_context,
-                    }
-                ),
-            },
+            {"role": "user", "content": json.dumps(_build_payload(vision, zone_context))},
         ],
         response_format={"type": "json_object"},
         max_tokens=600,
@@ -122,17 +112,17 @@ def reason_openai_fallback(vision: VisionAnalysis) -> NemotronAction:
     return NemotronAction(**data)
 
 
-def reason_over_evidence(vision: VisionAnalysis) -> tuple[NemotronAction, str]:
+def reason_over_evidence(vision: VisionAnalysis, zone_context: str = "") -> tuple[NemotronAction, str]:
     settings = get_settings()
     provider = settings.nemotron_provider.lower()
 
     if provider == "nvidia" and settings.nvidia_api_key:
         try:
-            return reason_nvidia(vision), "nvidia"
-        except Exception:
-            pass
+            return reason_nvidia(vision, zone_context), "nvidia"
+        except Exception as e:
+            print(f"[Nemotron] NVIDIA failed: {e} — falling back to OpenAI")
 
     if settings.openai_api_key:
-        return reason_openai_fallback(vision), "openai"
+        return reason_openai_fallback(vision, zone_context), "openai"
 
-    return reason_mock(vision), "mock"
+    return reason_mock(vision, zone_context), "mock"

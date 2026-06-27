@@ -1,0 +1,37 @@
+{
+  "surface": {
+    "name": "Surface / Yard",
+    "description": "Parking areas, loading docks, surface operations",
+    "required_ppe": ["hi_vis"],
+    "fatigue_check": false,
+    "regulation": "Ontario Reg 854 s.79"
+  },
+  "open_pit": {
+    "name": "Open Pit",
+    "description": "Active pit, haul roads, shovel and truck zones",
+    "required_ppe": ["hard_hat", "hi_vis"],
+    "fatigue_check": true,
+    "regulation": "Ontario Reg 854 s.79, s.81"
+  },
+  "underground_entry": {
+    "name": "Underground Entry / Ramp",
+    "description": "Portal, ramp, underground access points",
+    "required_ppe": ["hard_hat", "hi_vis"],
+    "fatigue_check": true,
+    "regulation": "Ontario Reg 854 s.79, s.81"
+  },
+  "active_stope": {
+    "name": "Active Stope / Production Zone",
+    "description": "Active mining faces, development headings, blast zones",
+    "required_ppe": ["hard_hat", "hi_vis"],
+    "fatigue_check": true,
+    "regulation": "Ontario Reg 854 s.79, s.81, s.105"
+  },
+  "processing_plant": {
+    "name": "Processing Plant / Mill",
+    "description": "Mill floor, crusher area, flotation circuit",
+    "required_ppe": ["hard_hat", "hi_vis"],
+    "fatigue_check": true,
+    "regulation": "Ontario Reg 854 s.79, s.81"
+  }
+}

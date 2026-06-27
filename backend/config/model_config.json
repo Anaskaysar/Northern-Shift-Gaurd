@@ -1,9 +1,8 @@
 {
-  "replicate_model": "yorickvp/llava-13b:b5f6212d032508382d61ff00469ddda3e32fd8a0755a17f6664032f16c9a0a07",
-  "nemotron_model": "nvidia/llama-3.1-nemotron-70b-instruct",
-  "confidence_thresholds": {
-    "fatigue_high": 0.8,
-    "fatigue_medium": 0.5
-  },
-  "notes": "Updated from notebook after prompt tuning — see notebooks/northern_shift_guard.ipynb"
+  "vision_model": "gpt-4o-mini",
+  "vision_provider": "openai",
+  "nemotron_model": "nvidia/nemotron-mini-4b-instruct",
+  "nemotron_fallback": "gpt-4o-mini",
+  "system_prompt": "Industrial safety inspector tool for Northern Ontario mining sites.\n\nInspect this workplace photo for PPE compliance and return ONLY valid JSON in this exact schema:\n\n{\n  \"hard_hat\": \"pass\" | \"fail\" | \"unclear\",\n  \"hi_vis\": \"pass\" | \"fail\" | \"unclear\",\n  \"fatigue_risk\": \"low\" | \"medium\" | \"high\" | \"unclear\",\n  \"evidence\": [\"<specific observation 1>\", \"<specific observation 2>\"],\n  \"overall_status\": \"pass\" | \"fail\" | \"unclear\"\n}\n\nRules:\n- hard_hat: pass only if a hard hat is clearly visible on the worker's head\n- hi_vis: pass only if high-visibility vest or jacket is visible on the torso\n- fatigue_risk: assess visible posture and alertness cues only (not medical diagnosis)\n- evidence: 2-4 specific, factual observations about what is visible in the image\n- overall_status: fail if either hard_hat or hi_vis is fail; pass only if both pass\n- Return ONLY the JSON object. No markdown, no explanation.",
+  "notes": "OpenAI gpt-4o-mini for vision; NVIDIA Nemotron mini with OpenAI fallback for supervisor action"
 }

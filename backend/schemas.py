@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import List, Literal, Optional
 from pydantic import BaseModel
-from datetime import datetime
 
 PPEStatus = Literal["pass", "fail", "unclear"]
 FatigueRiskLevel = Literal["low", "medium", "high", "unclear"]
 Priority = Literal["none", "monitor", "intervene", "stop_work"]
 Severity = Literal["info", "warning", "critical"]
+ComplianceStatus = Literal["compliant", "non_compliant", "not_required"]
 
 
 class PPEResult(BaseModel):
@@ -32,6 +32,22 @@ class VisionAnalysis(BaseModel):
     explanation: str = ""
 
 
+class ZoneRequirement(BaseModel):
+    ppe_item: str               # e.g. "hard_hat"
+    label: str                  # e.g. "Hard Hat"
+    required: bool
+    detected: PPEStatus
+    compliant: ComplianceStatus
+
+
+class ZoneCompliance(BaseModel):
+    zone_id: str
+    zone_name: str
+    regulation: str
+    requirements: List[ZoneRequirement]
+    overall: Literal["compliant", "non_compliant"]
+
+
 class NemotronAction(BaseModel):
     priority: Priority
     supervisor_action: str
@@ -47,6 +63,7 @@ class ProviderInfo(BaseModel):
 class AnalyzeResponse(BaseModel):
     scan_id: int
     vision: VisionAnalysis
+    zone_compliance: Optional[ZoneCompliance] = None
     nemotron: NemotronAction
     provider: ProviderInfo
     image_filename: str
@@ -61,4 +78,6 @@ class ScanSummary(BaseModel):
     fatigue_risk: FatigueRiskLevel
     priority: Priority
     supervisor_action: str
+    zone_id: Optional[str] = None
+    zone_name: Optional[str] = None
     created_at: str

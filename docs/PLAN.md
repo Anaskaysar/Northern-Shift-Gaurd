@@ -11,7 +11,7 @@
 
 ## One-sentence pitch
 
-Northern Shift Guard is an explainable AI safety system for Northern Ontario mining sites that uses computer vision to detect PPE non-compliance and fatigue risk, Nemotron to reason over that evidence and recommend prioritized supervisor actions, and an auditable TiDB trail so every flagged decision is traceable — not a black box.
+Northern Shift Guard is an explainable AI safety system for Northern Ontario mining sites that uses computer vision to detect PPE non-compliance and fatigue risk, checks each detection against zone-specific PPE requirements, Nemotron to reason over that evidence and recommend prioritized supervisor actions tailored to the selected zone, and a SQLite audit log so every flagged decision is traceable — not a black box.
 
 **Your edge (from resume):** detection + structured reasoning + explainable evidence — same narrative as MalariAI / SciRet, applied to industrial safety.
 
@@ -25,11 +25,12 @@ Northern Ontario mines are losing experienced tradespeople to retirement faster 
 
 ## Solution
 
-A shift-start screening tool: upload or capture a photo of a worker, and the system:
+A shift-start screening tool: supervisor selects a mine zone, uploads a worker photo, and the system:
 
-1. **Detects** PPE compliance (hard hat, hi-vis vest) and visible fatigue indicators via a vision model
-2. **Reasons** over that evidence using **Nemotron**, combined with real safety-reference context (scraped via Apify), to produce a prioritized, plain-language supervisor action — not just a flag, but what to actually do about it and why
-3. **Records** every scan — image reference, evidence JSON, Nemotron's recommendation, and timestamp — in **TiDB**, building a full audit trail so no decision is a black box
+1. **Detects** PPE (hard hat, hi-vis vest) and visible fatigue indicators via a vision model
+2. **Compares** detections against zone-specific requirements (Surface vs Active Stope vs Open Pit, etc.) — per-item required / detected / compliant
+3. **Reasons** over that evidence using **Nemotron**, enriched with zone context and safety-reference text (Apify), to produce a zone-tailored supervisor action — not just a flag, but what to do and why
+4. **Records** every scan — zone, evidence JSON, compliance breakdown, Nemotron recommendation, timestamp — in **SQLite**, building a full audit trail
 
 ---
 
@@ -43,23 +44,31 @@ Most PPE-compliance demos stop at "detected: no helmet." That's a description, n
 
 ```mermaid
 flowchart TD
-  Image[Image upload or webcam frame]
-  Vision[Vision model Replicate or Veleo]
+  Zone[Supervisor selects mine zone]
+  Image[Upload worker photo]
+  Vision[OpenAI GPT-4o vision]
   JSON[Structured JSON hard_hat hi_vis fatigue_risk evidence]
-  Nemotron[Nemotron + Apify safety context]
-  Action[Prioritized supervisor action]
-  TiDB[TiDB audit log]
-  UI[UI pass fail evidence cards action line]
+  ZoneRules[Zone rules engine]
+  Compliance[Per-item required detected compliant]
+  Nemotron[Nemotron + zone context]
+  Action[Zone-tailored supervisor action]
+  Audit[SQLite audit log]
+  UI[Detection + zone compliance + action]
 
-  Image --> Vision --> JSON --> Nemotron --> Action
-  JSON --> TiDB
-  Action --> TiDB
-  TiDB --> UI
+  Zone --> Image --> Vision --> JSON
+  Zone --> ZoneRules
+  JSON --> ZoneRules --> Compliance
+  JSON --> Nemotron --> Action
+  JSON --> Audit
+  Compliance --> Audit
+  Action --> Audit
+  Audit --> UI
   JSON --> UI
+  Compliance --> UI
   Action --> UI
 ```
 
-**Core pipeline (must ship):** vision detection → structured evidence → Nemotron action → TiDB record → UI cards.
+**Core pipeline (shipped):** zone selection → vision detection → zone compliance → Nemotron action → SQLite record → UI cards.
 
 ---
 
@@ -71,10 +80,11 @@ flowchart TD
 | Safety reference text | Done | `data/safety_refs/` (OSHA, Ontario Reg 854, Northern context) |
 | Model notebook | Done | `notebooks/northern_shift_guard.ipynb` |
 | Model config export | Done | `backend/config/model_config.json` |
-| Backend API | Done | `/health`, `/api/analyze`, `/api/scans` with vision + Nemotron + TiDB |
-| Frontend | Done | Lovable industrial UI wired to FastAPI |
+| Backend API | Done | `/health`, `/api/zones`, `/api/analyze`, `/api/scans` with vision + zone rules + Nemotron + SQLite |
+| Zone-aware compliance | Done | 5 zones in `backend/config/zones.json`; per-item compliance panel in UI |
+| Frontend | Done | Zone selector + detection + compliance + Nemotron action + audit trail |
 | Sample images | Done | pass / fail / fatigue demo photos in `sample_images/` |
-| Deployment | Pending | Aptly / Vultr live URL |
+| Deployment | In progress | Docker + Render blueprint (`Dockerfile`, `render.yaml`) |
 | Submission | Pending | GitHub push, Canva pitch, Devpost, demo video |
 
 ---
@@ -117,7 +127,7 @@ Given the **4 PM deadline**, we use a **hybrid** — not full training from scra
 ```mermaid
 flowchart LR
   subgraph tier1 [Tier1_Ship_by_4PM]
-    A[Replicate or Veleo vision LLM]
+    A[OpenAI GPT-4o vision]
     B[Prompt tuning in notebook]
     C[Structured JSON output]
     D[Nemotron reasoning layer]
@@ -142,10 +152,10 @@ flowchart LR
 #### Tier 1 — Primary (no custom training, ships the demo)
 
 1. Open `notebooks/northern_shift_guard.ipynb`
-2. Test **Replicate** multimodal models on `sample_images/`
+2. Test **OpenAI GPT-4o** multimodal vision on `sample_images/`
 3. Tune system prompt until JSON is stable: `{ hard_hat, hi_vis, fatigue_risk, evidence[] }`
 4. Export prompt + model ID → `backend/config/model_config.json`
-5. Backend calls vision API → passes JSON to **Nemotron** → persists to TiDB
+5. Backend calls vision API → zone compliance check → passes JSON + zone context to **Nemotron** → persists to SQLite
 
 **This is what ships the demo if time is tight.**
 
@@ -181,7 +191,7 @@ flowchart LR
 | **Nemotron path** | **Prioritized supervisor action** | Plain-language stop-work vs monitor guidance with reasoning |
 | **YOLO path** (optional) | **Bounding boxes** on helmet / vest / head | Visual overlay on uploaded image |
 | **YOLO + Grad-CAM++** (stretch) | **Heatmap** on backbone activations for flagged class | Same style as MalariAI — per-region spatial explainability |
-| **Audit log** (TiDB) | **Traceability** | Every scan stores evidence JSON + Nemotron action + timestamp |
+| **Audit log** (SQLite) | **Traceability** | Every scan stores zone, evidence JSON, compliance breakdown, Nemotron action + timestamp |
 
 **Minimum XAI for submission:** evidence bullets + pass/fail/unclear states + Nemotron action + stored audit record.  
 **Strong XAI (if time):** YOLO boxes + Grad-CAM++ overlay on non-compliant detections.
@@ -193,13 +203,12 @@ flowchart LR
 | Tool | Credits / access | Role in this project |
 |------|------------------|----------------------|
 | **Cursor** | Claim hackathon credits | Primary IDE — backend, frontend, notebook, debugging |
-| **Replicate** | Hackathon credits | Run vision models (PPE / multimodal) via API — fast inference |
+| **OpenAI** | API key | **Primary** vision inference — GPT-4o multimodal PPE + fatigue screening |
 | **Nemotron** (NVIDIA) | Special prize track | **Core** reasoning layer — evidence → prioritized supervisor action |
-| **TiDB Cloud** | Special prize track | Persist scan history, audit log, shift records |
+| **TiDB Cloud** | Not used (credits unavailable) | Replaced by SQLite audit log for demo |
 | **Apify** | Promo `BIOLINKTRAT077` ($50) | Scrape public mining safety docs for Nemotron context |
 | **Vultr** | Hackathon credits | GPU compute for notebook training + optional app hosting |
 | **Lovable** | Code `CORI-CURS-74C0` (500 credits) | Rapid UI prototype / dashboard shell |
-| **Veleo API** | Free tier (~500 requests) | Backup multimodal vision API if Replicate is slow |
 | **Locofy** | Event access | Design-to-code for React components (if using Figma) |
 | **Vanna.AI** | Event tool | Optional — natural-language queries over scan history in DB |
 | **Aptly** | Start-here checklist | Build, test, deploy AI-first app quickly |
@@ -219,7 +228,7 @@ flowchart TD
   subgraph phase0 [Phase0_Setup]
     A1[Open Cursor_Hackathon in Cursor]
     A2[Claim Cursor credits]
-    A3[Create accounts Replicate Vultr Lovable Apify TiDB Discord GitHub]
+    A3[Create accounts OpenAI Vultr Lovable Apify Discord GitHub]
   end
 
   subgraph phase1 [Phase1_Data_and_Research]
@@ -230,14 +239,14 @@ flowchart TD
 
   subgraph phase2 [Phase2_Model_Work_ipynb]
     C1[notebooks/northern_shift_guard.ipynb]
-    C2[Test Replicate vision models]
+    C2[Test OpenAI GPT-4o vision on sample_images]
     C3[Evaluate PPE + fatigue on sample_images]
     C4[Export model_config.json]
   end
 
   subgraph phase3 [Phase3_Backend]
     D1[FastAPI backend/]
-    D2[POST /api/analyze vision + Nemotron + TiDB]
+    D2[POST /api/analyze vision + zone rules + Nemotron + SQLite]
     D3[Env vars in .env never commit keys]
   end
 
@@ -271,7 +280,7 @@ flowchart TD
 
 1. Work only inside `Cursor_Hackathon/`.
 2. Claim **Cursor credits** from the hackathon site.
-3. Create / verify accounts: **Replicate**, **Vultr**, **Lovable**, **Apify**, **TiDB Cloud**, **GitHub**, **Devpost**, **Discord**.
+3. Create / verify accounts: **OpenAI**, **Vultr**, **Lovable**, **Apify**, **GitHub**, **Devpost**, **Discord**.
 4. Apply **Lovable** code `CORI-CURS-74C0` and **Apify** promo `BIOLINKTRAT077`.
 5. Copy `.env.example` → `.env` locally (gitignored).
 
@@ -289,14 +298,14 @@ flowchart TD
 
 ---
 
-### Phase 2 — Model work in Jupyter · **Cursor, Vultr, Replicate, notebook**
+### Phase 2 — Model work in Jupyter · **Cursor, Vultr, OpenAI, notebook**
 
 **File:** `notebooks/northern_shift_guard.ipynb`
 
 **Notebook sections:**
 
-1. **Setup** — load `sample_images/`, install `replicate`, `pillow`, `opencv-python`, `matplotlib`
-2. **Replicate model sweep** — test 1–2 vision models on PPE detection; log latency + accuracy on samples
+1. **Setup** — load `sample_images/`, install `openai`, `pillow`, `opencv-python`, `matplotlib`
+2. **OpenAI vision eval** — test GPT-4o on PPE detection; log latency + accuracy on samples
 3. **Prompt tuning** — iterate structured JSON output (hard_hat, hi_vis, fatigue_risk, evidence[])
 4. **Nemotron cell** — pass vision JSON + safety refs → supervisor narrative
 5. **Optional YOLO baseline** (if time) — train/eval on public PPE dataset on **Vultr GPU**
@@ -307,16 +316,17 @@ flowchart TD
 
 ---
 
-### Phase 3 — Backend · **Cursor, Replicate, Veleo, Nemotron, TiDB**
+### Phase 3 — Backend · **Cursor, OpenAI, Nemotron, SQLite**
 
 ```
 backend/
 ├── main.py              # FastAPI + CORS
 ├── schemas.py           # Pydantic response models
-├── vision_service.py    # Replicate / Veleo calls
+├── vision_service.py    # OpenAI GPT-4o vision calls
 ├── nemotron_service.py  # Nemotron reasoning over evidence
 ├── prompts.py           # prompt from notebook export
-├── db.py                # TiDB Cloud connection
+├── db.py                # SQLite audit log
+├── zone_service.py      # Zone definitions + compliance check
 ├── settings.py          # env config
 ├── config/
 │   └── model_config.json
@@ -328,16 +338,16 @@ backend/
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /health` | Smoke test |
-| `POST /api/analyze` | Image in → vision JSON + Nemotron action out |
-| `GET /api/scans` | Recent scans from TiDB |
-| `POST /api/scans` | Persist scan + evidence (via analyze flow) |
+| `GET /api/zones` | Mine zone definitions and PPE requirements |
+| `POST /api/analyze` | Image + zone → vision JSON + zone compliance + Nemotron action |
+| `GET /api/scans` | Recent scans from SQLite audit log |
 
 **Tool routing:**
 
-- Primary inference: **Replicate** vision model (from notebook winner)
-- Fallback: **Veleo API** if Replicate rate-limits
+- Primary inference: **OpenAI GPT-4o** vision (from notebook export)
+- Fallback: **mock mode** if no API key configured
 - Reasoning: **Nemotron** rewrites evidence into prioritized supervisor actions
-- Storage: **TiDB Cloud** — `scans(id, timestamp, image_url, ppe_json, fatigue_json, evidence, actions)`
+- Storage: **SQLite** — `scans(id, timestamp, zone, ppe_json, compliance_json, evidence, actions)`
 
 ---
 
@@ -365,11 +375,11 @@ frontend/
 
 ---
 
-### Phase 5 — Deployment · **Aptly, Vultr**
+### Phase 5 — Deployment · **Docker, Render**
 
-1. **Aptly** — deploy FastAPI backend + static React build
-2. **Vultr** — VM or container host if Aptly routes there; ensure CORS allows frontend origin
-3. Verify live URL works with 2 `sample_images/` test cases
+1. **Docker** — multi-stage build: React frontend + FastAPI serving static + API
+2. **Render** — connect GitHub repo, Web Service → Docker, set env vars from `.env.example`
+3. Smoke test live URL with zone selector + 2 `sample_images/` test cases
 4. Add demo URL to README
 
 ---
@@ -437,22 +447,24 @@ Cursor_Hackathon/
 |------|-------|------------|-------------|
 | 10:30–11:00 | Setup | Cursor, Discord | Accounts + credits claimed |
 | 11:00–11:30 | Data | Apify | `sample_images/` + safety refs |
-| 11:30–1:00 | Models | notebook, Replicate, Vultr | Working inference + exported config |
-| 1:00–2:30 | Backend | Cursor, TiDB, Nemotron | `/api/analyze` live locally |
+| 11:30–1:00 | Models | notebook, OpenAI, Vultr | Working inference + exported config |
+| 1:00–2:30 | Backend | Cursor, Nemotron, SQLite | `/api/analyze` + zone rules live locally |
 | 2:30–3:30 | UI | Lovable, Cursor | Upload → results dashboard |
-| 3:30–3:50 | Deploy | Aptly, Vultr | Public demo URL |
+| 3:30–3:50 | Deploy | Docker, Render | Public demo URL |
 | 3:50–4:00 | Submit | GitHub, Canva, Devpost | Submission complete |
 
 ---
 
 ## Demo script (~3 min)
 
-1. **Problem** — Northern mines need faster, auditable PPE + fatigue screening at shift start.
-2. **Pass case** — upload compliant worker → green cards, no action needed.
-3. **Fail case** — missing hard hat → red flag, evidence bullets, Nemotron's prioritized action ("stop-work, missing hard hat is the immediate issue").
-4. **Fatigue case** — visible fatigue cue → medium-risk flag, Nemotron recommends monitoring, not escalation (screening aid only, not medical diagnosis).
-5. **Audit trail** — show TiDB record of all three scans, fully traceable.
-6. **Close** — explainable by design: every flag shows what was seen, why it matters, and what to do — not a black box.
+1. **Problem** — Northern mines need faster, auditable, zone-aware PPE + fatigue screening at shift start.
+2. **Zone context** — select **Active Stope**; explain that requirements differ by zone (Surface = hi-vis only; stope = hard hat + hi-vis).
+3. **Fail case** — upload missing-hard-hat photo → detection panel + zone compliance rows (required / detected / fail) + Nemotron stop-work action tailored to stope.
+4. **Same photo, different zone** — switch to **Surface / Yard** → hard hat not required; compliance may change. Shows context-aware logic.
+5. **Pass case** — upload compliant worker in Open Pit → green compliant.
+6. **Fatigue case** — visible fatigue cue → medium-risk flag, Nemotron recommends monitoring (screening aid only).
+7. **Audit trail** — show SQLite-backed scan history with zone, evidence, and actions.
+8. **Close** — explainable by design: what was seen, what the zone requires, whether each item complies, and what to do — not a black box.
 
 ---
 
@@ -461,7 +473,7 @@ Cursor_Hackathon/
 | Cut first | Keep no matter what |
 |-----------|---------------------|
 | Webcam capture | Upload + analyze |
-| YOLO training / Grad-CAM heatmaps | Replicate vision + Nemotron + TiDB |
+| YOLO training / Grad-CAM heatmaps | OpenAI vision + zone rules + Nemotron + SQLite |
 | Voice narration (Deepgram / Valsea) | Structured JSON + evidence + Nemotron action |
 | Vanna SQL chat | Scan history table |
 | Locofy polish | Lovable or plain React |
@@ -472,8 +484,8 @@ Cursor_Hackathon/
 ## Success criteria at 4:00 PM
 
 - [ ] `notebooks/northern_shift_guard.ipynb` runs and documents model choice
-- [ ] Live demo: image → PPE + fatigue analysis + Nemotron action + evidence
-- [ ] TiDB stores scan history (or SQLite fallback noted in README)
+- [ ] Live demo: zone select → image → PPE + zone compliance + Nemotron action + evidence
+- [ ] SQLite stores scan history (audit trail tab)
 - [ ] Public GitHub repo — no secrets
 - [ ] Devpost submitted under **Mining & Industrial Innovation**
 - [ ] Demo ties to your explainable AI / CV research background
@@ -482,4 +494,4 @@ Cursor_Hackathon/
 
 ## Next step
 
-Say **"execute the plan"** to continue from current progress: finish frontend polish, add demo images, deploy, and submit.
+Say **"execute the plan"** to continue from current progress: deploy to Render, push GitHub, and submit.

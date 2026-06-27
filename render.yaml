@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: northern-shift-guard
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: VISION_PROVIDER
+        value: openai
+      - key: NEMOTRON_PROVIDER
+        value: nvidia
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: PYTHONUNBUFFERED
+        value: "1"

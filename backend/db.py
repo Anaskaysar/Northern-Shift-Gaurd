@@ -30,20 +30,24 @@ def _get_engine():
 
 
 def _init_table(engine):
+    is_sqlite = str(engine.url).startswith("sqlite")
+    id_col = "INTEGER PRIMARY KEY AUTOINCREMENT" if is_sqlite else "INTEGER PRIMARY KEY AUTO_INCREMENT"
     with engine.connect() as conn:
-        # Drop and recreate to ensure schema is current (dev only — TiDB uses migrations)
-        conn.execute(text("DROP TABLE IF EXISTS scans"))
-        conn.execute(text("""
-            CREATE TABLE scans (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+        conn.execute(text(f"""
+            CREATE TABLE IF NOT EXISTS scans (
+                id {id_col},
                 image_filename TEXT,
                 hard_hat TEXT,
                 hi_vis TEXT,
                 fatigue_risk TEXT,
                 priority TEXT,
                 supervisor_action TEXT,
+                zone_id TEXT,
+                zone_name TEXT,
+                zone_overall TEXT,
                 vision_json TEXT,
                 nemotron_json TEXT,
+                zone_json TEXT,
                 provider_vision TEXT,
                 provider_nemotron TEXT,
                 created_at TEXT
@@ -55,15 +59,18 @@ def _init_table(engine):
 def save_scan(result: AnalyzeResponse) -> int:
     engine = _get_engine()
     ts = datetime.now(timezone.utc).isoformat()
+    zc = result.zone_compliance
     with engine.connect() as conn:
         r = conn.execute(text("""
             INSERT INTO scans
               (image_filename, hard_hat, hi_vis, fatigue_risk, priority,
-               supervisor_action, vision_json, nemotron_json,
+               supervisor_action, zone_id, zone_name, zone_overall,
+               vision_json, nemotron_json, zone_json,
                provider_vision, provider_nemotron, created_at)
             VALUES
               (:image_filename, :hard_hat, :hi_vis, :fatigue_risk, :priority,
-               :supervisor_action, :vision_json, :nemotron_json,
+               :supervisor_action, :zone_id, :zone_name, :zone_overall,
+               :vision_json, :nemotron_json, :zone_json,
                :provider_vision, :provider_nemotron, :created_at)
         """), {
             "image_filename": result.image_filename,
@@ -72,8 +79,12 @@ def save_scan(result: AnalyzeResponse) -> int:
             "fatigue_risk": result.vision.fatigue.risk,
             "priority": result.nemotron.priority,
             "supervisor_action": result.nemotron.supervisor_action,
+            "zone_id": zc.zone_id if zc else None,
+            "zone_name": zc.zone_name if zc else None,
+            "zone_overall": zc.overall if zc else None,
             "vision_json": result.vision.model_dump_json(),
             "nemotron_json": result.nemotron.model_dump_json(),
+            "zone_json": zc.model_dump_json() if zc else None,
             "provider_vision": result.provider.vision,
             "provider_nemotron": result.provider.nemotron,
             "created_at": ts,
@@ -86,7 +97,7 @@ def get_recent_scans(limit: int = 20) -> list[ScanSummary]:
     engine = _get_engine()
     with engine.connect() as conn:
         rows = conn.execute(text(
-            "SELECT id, image_filename, hard_hat, hi_vis, fatigue_risk, priority, supervisor_action, created_at "
+            "SELECT id, image_filename, hard_hat, hi_vis, fatigue_risk, priority, supervisor_action, zone_id, zone_name, created_at "
             "FROM scans ORDER BY id DESC LIMIT :limit"
         ), {"limit": limit}).fetchall()
 
@@ -99,6 +110,8 @@ def get_recent_scans(limit: int = 20) -> list[ScanSummary]:
             fatigue_risk=row.fatigue_risk or "unclear",
             priority=row.priority or "none",
             supervisor_action=row.supervisor_action or "",
+            zone_id=getattr(row, "zone_id", None),
+            zone_name=getattr(row, "zone_name", None),
             created_at=row.created_at or "",
         )
         for row in rows

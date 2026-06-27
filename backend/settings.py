@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -18,7 +19,7 @@ class Settings(BaseSettings):
     replicate_api_token: str = ""
     nemotron_provider: str = "mock"
     nvidia_api_key: str = ""
-    tidb_dsn: str = ""
+    database_dsn: str = Field(default="", validation_alias="DATABASE_URL")
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     @property
@@ -27,8 +28,8 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        if self.tidb_dsn:
-            return self.tidb_dsn
+        if self.database_dsn:
+            return self.database_dsn
         db_path = ROOT_DIR / "northern_shift_guard.db"
         return f"sqlite:///{db_path}"
 
