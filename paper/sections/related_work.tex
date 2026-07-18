@@ -1,0 +1,16 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{PPE Detection in Industrial Settings}
+
+Object detection models such as YOLO have been applied to PPE compliance in construction and manufacturing~\cite{sh17}. These systems detect hard hats, hi-vis vests, and other equipment with high precision on benchmark datasets. However, they produce binary pass/fail labels without zone context, regulatory grounding, or supervisor guidance.
+
+\subsection{Vision-Language Models for Mining Safety}
+
+Recent work applies vision-language models (VLMs) to mining safety violation detection. MonitorVLM~\cite{monitorvlm2025} detects safety violations from surveillance video using a clause-filter module that selects relevant mining regulations and a behavior magnifier for fine-grained action recognition. Graph-based frameworks combine 3D perception with LLM safety reasoning for underground monitoring~\cite{mdse2026}.
+
+Northern Shift Guard differs in scope and design: we target \emph{shift-start checkpoint screening} rather than continuous surveillance, emphasize \emph{zone-specific compliance} over global violation detection, and prioritize \emph{auditable decision chains} for human supervisors rather than autonomous enforcement.
+
+\subsection{Explainable AI in Regulated Domains}
+
+Explainability is not optional in regulated industrial settings. Our system provides three inspectable layers: structured vision evidence, per-item zone compliance breakdown, and Nemotron rationale with recommended steps. This design aligns with human-in-the-loop requirements for mining safety systems.

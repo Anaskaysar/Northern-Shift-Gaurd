@@ -1,0 +1,25 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Implications for Shift-Start Workflows}
+
+Northern Shift Guard matches real supervisor workflow: select zone, inspect worker, make clearance decision. The system supports---not replaces---human judgment by providing structured evidence, zone-specific compliance, and documented reasoning.
+
+\subsection{Comparison to Related Work}
+
+Unlike MonitorVLM~\cite{monitorvlm2025}, which targets continuous surveillance violation detection, our system focuses on checkpoint screening with explicit zone context and audit trails. Unlike global PPE detectors, we reduce false alarms by tying compliance to zone-specific requirements.
+
+\subsection{Limitations}
+
+\begin{itemize}
+  \item \textbf{Fatigue screening} is a visual aid only---not medical diagnosis.
+  \item \textbf{Evaluation set} is hackathon-origin; production needs larger mine-site dataset.
+  \item \textbf{Cloud dependency} requires offline fallback for production deployment.
+  \item \textbf{No field trial} yet; validation on public and curated images only.
+  \item \textbf{Limited PPE types}: hard hat and hi-vis only in current prototype.
+  \item \textbf{Privacy}: production requires retention policy, role-based access, union agreements.
+\end{itemize}
+
+\subsection{Future Work}
+
+Webcam capture at cage entry, batch crew scanning, expanded PPE types (gloves, respirators, metatarsal boots), shift-over-shift compliance analytics, and WSIB/MOL report export from audit records.

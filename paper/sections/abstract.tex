@@ -1,0 +1,9 @@
+\begin{abstract}
+Shift-start personal protective equipment (PPE) and fatigue screening in Northern Ontario mining remains manual, inconsistent, and undocumented. Existing computer vision systems detect PPE globally but fail to account for zone-specific requirements under Ontario Regulation~854---producing false alarms when workers enter surface areas where hard hats are not required.
+
+We present \textbf{Northern Shift Guard}, a three-layer vision-language decision framework for explainable and auditable shift-start safety screening. Given a worker photo and selected mine zone, the system: (1)~extracts structured PPE and fatigue evidence via GPT-4o vision, (2)~checks detections against zone-specific compliance rules, and (3)~reasons over evidence using NVIDIA Nemotron to produce prioritized supervisor actions grounded in regulatory context. Every decision is stored in an audit log with full evidence chain.
+
+We evaluate on \textbf{[N]} images across \textbf{[M]} mine zones and show that zone-aware compliance reduces false alarm rates by \textbf{[X]\%} compared to global-rule baselines, while maintaining \textbf{[Y]\%} PPE detection accuracy. A zone-flip case study demonstrates that identical visual evidence yields different compliance outcomes under surface versus active stope requirements. We discuss limitations including fatigue screening as a visual aid (not medical diagnosis), privacy considerations, and deployment requirements for production mine sites.
+\end{abstract}
+
+\textbf{Keywords:} mining safety, PPE compliance, explainable AI, vision-language model, zone-aware screening, audit trail, shift-start safety

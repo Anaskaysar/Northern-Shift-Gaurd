@@ -1,0 +1,45 @@
+\section{Experimental Setup}
+\label{sec:experiments}
+
+\subsection{Datasets}
+
+We evaluate on a combined dataset of:
+\begin{itemize}
+  \item \textbf{Demo set} (10 images): curated mining-relevant scenarios from \texttt{sample\_images/}.
+  \item \textbf{Public PPE datasets} (target 100--200): SH17~\cite{sh17}, Construction-PPE, jhboyo/ppe-dataset.
+  \item \textbf{Curated industrial set} (target 30--50): manually labeled mining/industrial photos.
+\end{itemize}
+
+Each image is labeled with ground-truth PPE status and applicable zones. See \texttt{eval/dataset/labels.json} for the label schema.
+
+\subsection{Baselines}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Baseline comparison.}
+  \label{tab:baselines}
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Baseline & Description \\
+    \midrule
+    B1: Global rules & Hard hat + hi-vis always required \\
+    B2: Vision-only & GPT-4o pass/fail, no zone context \\
+    B3: YOLO + global & YOLOv8 PPE detector + global compliance \\
+    B4: Full pipeline & Northern Shift Guard (vision + zone + Nemotron) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Metrics}
+
+\begin{itemize}
+  \item \textbf{PPE detection accuracy}: per-class precision/recall for hard hat and hi-vis.
+  \item \textbf{Zone-flip accuracy}: correct compliance when zone changes for same image.
+  \item \textbf{False alarm reduction}: $(\text{global FA} - \text{zone FA}) / \text{global FA}$.
+  \item \textbf{Reasoning quality}: supervisor rubric scores (1--5) on action correctness, regulatory grounding, and clarity.
+  \item \textbf{Latency}: end-to-end time from upload to response (p50, p95).
+\end{itemize}
+
+\subsection{Zone-Flip Protocol}
+
+We select images where hard hat is absent but worker is otherwise compliant. Each image is evaluated under Surface / Yard (hard hat not required) and Active Stope (hard hat required). We report compliance verdict and false alarm rate for global vs zone-aware baselines.

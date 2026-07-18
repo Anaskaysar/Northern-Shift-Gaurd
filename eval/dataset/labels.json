@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "description": "Ground-truth labels for Northern Shift Guard evaluation. Extend with public PPE dataset entries.",
+  "images": [
+    {
+      "image_id": "pass_compliant",
+      "filename": "pass_compliant.jpg",
+      "path": "../sample_images/pass_compliant.jpg",
+      "hard_hat": "pass",
+      "hi_vis": "pass",
+      "fatigue_risk": "low",
+      "applicable_zones": ["surface", "open_pit", "underground_entry", "active_stope", "processing_plant"],
+      "ground_truth_compliance": {
+        "surface": "compliant",
+        "open_pit": "compliant",
+        "underground_entry": "compliant",
+        "active_stope": "compliant",
+        "processing_plant": "compliant"
+      },
+      "zone_flip_case": false,
+      "source": "demo",
+      "notes": "Worker with hard hat + hi-vis vest — should pass all zones"
+    },
+    {
+      "image_id": "fail_missing_hardhat",
+      "filename": "fail_missing_hardhat.jpg",
+      "path": "../sample_images/fail_missing_hardhat.jpg",
+      "hard_hat": "fail",
+      "hi_vis": "fail",
+      "fatigue_risk": "low",
+      "applicable_zones": ["surface", "open_pit", "underground_entry", "active_stope", "processing_plant"],
+      "ground_truth_compliance": {
+        "surface": "non_compliant",
+        "open_pit": "non_compliant",
+        "underground_entry": "non_compliant",
+        "active_stope": "non_compliant",
+        "processing_plant": "non_compliant"
+      },
+      "zone_flip_case": false,
+      "source": "demo",
+      "notes": "Both PPE fail — not a zone-flip case (surface also fails on hi-vis)"
+    },
+    {
+      "image_id": "zone_flip_no_hardhat",
+      "filename": "TBD_zone_flip.jpg",
+      "path": null,
+      "hard_hat": "fail",
+      "hi_vis": "pass",
+      "fatigue_risk": "low",
+      "applicable_zones": ["surface", "active_stope"],
+      "ground_truth_compliance": {
+        "surface": "compliant",
+        "active_stope": "non_compliant"
+      },
+      "zone_flip_case": true,
+      "source": "curated",
+      "notes": "HEADLINE CASE — add image: worker with hi-vis but no hard hat. Surface=pass, Stope=fail. Source from PPE dataset or new photo."
+    },
+    {
+      "image_id": "fatigue_tired_operator",
+      "filename": "fatigue_tired_operator.jpg",
+      "path": "../sample_images/fatigue_tired_operator.jpg",
+      "hard_hat": "fail",
+      "hi_vis": "fail",
+      "fatigue_risk": "medium",
+      "applicable_zones": ["surface", "open_pit", "underground_entry", "active_stope", "processing_plant"],
+      "ground_truth_compliance": {
+        "surface": "non_compliant",
+        "open_pit": "non_compliant",
+        "underground_entry": "non_compliant",
+        "active_stope": "non_compliant",
+        "processing_plant": "non_compliant"
+      },
+      "zone_flip_case": false,
+      "source": "demo",
+      "notes": "Visible fatigue cues — PPE fail expected; fatigue is screening aid only"
+    }
+  ]
+}

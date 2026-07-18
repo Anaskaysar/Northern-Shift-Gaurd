@@ -1,0 +1,50 @@
+\section{Appendix}
+
+\subsection{Zone Configuration Schema}
+
+See \texttt{backend/config/zones.json} in the repository.
+
+\subsection{Prompt Templates}
+
+Vision and Nemotron system prompts are defined in \texttt{backend/prompts.py}.
+
+\subsection{Sample Audit Record}
+
+\begin{lstlisting}[basicstyle=\small\ttfamily, breaklines=true]
+{
+  "scan_id": 42,
+  "zone_id": "active_stope",
+  "vision": {
+    "ppe": {"hard_hat": "fail", "hi_vis": "pass"},
+    "fatigue": {"risk": "low", "indicators": []},
+    "evidence": [
+      {"region": "head", "observation": "No hard hat visible",
+       "severity": "critical"}
+    ]
+  },
+  "zone_compliance": {"overall": "non_compliant"},
+  "nemotron": {
+    "priority": "stop_work",
+    "supervisor_action": "Stop work before underground entry.",
+    "rationale": "Missing hard hat in active stope zone."
+  },
+  "created_at": "2026-06-27T14:32:00Z"
+}
+\end{lstlisting}
+
+\subsection{Supervisor Evaluation Rubric}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Reasoning quality rubric (1--5 scale).}
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Criterion & Description \\
+    \midrule
+    Action correctness & Correct priority and supervisor action \\
+    Regulatory grounding & References zone requirements appropriately \\
+    Explainability clarity & Clear chain: seen $\rightarrow$ requires $\rightarrow$ do \\
+    Practical usability & Actionable steps a supervisor can follow \\
+    \bottomrule
+  \end{tabular}
+\end{table}

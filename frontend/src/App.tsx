@@ -87,7 +87,11 @@ export default function App() {
           {error && (
             <div className="rounded-xl border border-fail/40 bg-fail/10 px-4 py-3 text-fail-foreground">
               <strong>Error:</strong> {error}
-              <p className="mt-1 text-sm opacity-90">Make sure the backend is running on port 8000.</p>
+              <p className="mt-1 text-sm opacity-90">
+                {import.meta.env.DEV
+                  ? "Make sure the backend is running on port 8000."
+                  : "On Render, use a Web Service with Language set to Docker — not a Static Site."}
+              </p>
             </div>
           )}
 

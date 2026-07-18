@@ -1,0 +1,22 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Northern Ontario mines are losing experienced tradespeople to retirement faster than they can replace them~\cite{northernshiftguard2026}. New workers at shift start face compounded risk: fatigue from overnight travel, unfamiliar PPE protocols, and supervisors who must make rapid clearance decisions without documented evidence. When an injury, liability dispute, or Ministry of Labour inspection occurs, there is often no record of what was checked, what was seen, or why a worker was allowed on the floor.
+
+Shift-start PPE checks remain manual, inconsistent, and zone-blind. A supervisor glances at a worker, makes a judgment call, and nothing is recorded. Meanwhile, computer vision systems for PPE detection treat every site as a single ruleset---flagging missing hard hats even when a worker enters a surface yard where helmets are not required under Ontario Regulation~854~\cite{ontario854}.
+
+\subsection{Contributions}
+
+We present \textbf{Northern Shift Guard}, a shift-start AI screening system that addresses these gaps through a three-layer decision architecture:
+
+\begin{enumerate}
+  \item \textbf{Vision evidence extraction} --- GPT-4o produces structured JSON describing PPE status, fatigue cues, and region-level observations.
+  \item \textbf{Zone compliance engine} --- A config-driven rules engine checks detections against zone-specific PPE requirements (surface yard, open pit, underground ramp, active stope, processing plant).
+  \item \textbf{Reasoning and audit} --- NVIDIA Nemotron produces prioritized supervisor actions grounded in regulatory context; every scan is stored with full evidence chain.
+\end{enumerate}
+
+Our key empirical claim: \emph{the same worker photo can yield different compliance outcomes depending on mine zone context}---reducing false alarms from global-rule detectors while maintaining safety in high-risk zones.
+
+\subsection{Paper Organization}
+
+Section~\ref{sec:related} reviews related work. Section~\ref{sec:method} describes the system architecture. Section~\ref{sec:experiments} details the evaluation setup. Section~\ref{sec:results} presents results. Section~\ref{sec:discussion} discusses implications and limitations.

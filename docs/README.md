@@ -16,6 +16,7 @@ Reference materials for the hackathon build and showcase. The app runs without t
 | [**system_architecture.svg**](system_architecture.svg) | End-to-end pipeline diagram (also embedded in root README) |
 | [**Northern_Shift_Guard_Project_Report.pdf**](Northern_Shift_Guard_Project_Report.pdf) | Full written project report |
 | [**Northern_Shift_Guard_Pitch_v2.pptx**](Northern_Shift_Guard_Pitch_v2.pptx) | Pitch deck (v2) |
+| [**RESEARCH.md**](RESEARCH.md) | Research roadmap — arXiv preprint + mining industry conference guide |
 
 ---
 

@@ -1,0 +1,61 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{System Overview}
+
+Northern Shift Guard implements a four-stage pipeline (Figure~\ref{fig:architecture}):
+
+\begin{enumerate}
+  \item Supervisor selects mine zone and uploads worker photo.
+  \item Vision model extracts structured PPE and fatigue evidence.
+  \item Zone compliance engine compares detections against zone requirements.
+  \item Reasoning model produces prioritized supervisor action; result stored in audit log.
+\end{enumerate}
+
+% \begin{figure}[htbp]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figures/architecture.pdf}
+%   \caption{Northern Shift Guard system architecture.}
+%   \label{fig:architecture}
+% \end{figure}
+
+\subsection{Vision Evidence Extraction}
+
+We use GPT-4o~\cite{openai2024gpt4o} with a structured JSON prompt to analyze worker photos. The output schema includes:
+\begin{itemize}
+  \item \texttt{ppe.hard\_hat}: pass | fail | unclear
+  \item \texttt{ppe.hi\_vis}: pass | fail | unclear
+  \item \texttt{fatigue.risk}: low | medium | high | unclear
+  \item \texttt{evidence[]}: region, observation, severity tuples
+\end{itemize}
+
+Fatigue assessment is limited to visible posture and alertness cues---not medical diagnosis.
+
+\subsection{Zone Compliance Engine}
+
+Mine zones are defined in a configuration file with per-zone PPE requirements grounded in Ontario Regulation~854 (Table~\ref{tab:zones}). For each PPE item, the engine computes: required (bool), detected (pass/fail/unclear), and compliant (compliant/non\_compliant/not\_required).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Zone-specific PPE requirements.}
+  \label{tab:zones}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Zone & Required PPE & Regulation \\
+    \midrule
+    Surface / Yard & Hi-vis only & Reg 854 s.79 \\
+    Open Pit & Hard hat + hi-vis & s.79, s.81 \\
+    Underground Entry & Hard hat + hi-vis & s.79, s.81 \\
+    Active Stope & Hard hat + hi-vis & s.79, s.81, s.105 \\
+    Processing Plant & Hard hat + hi-vis & s.79, s.81 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Reasoning Layer}
+
+NVIDIA Nemotron~\cite{nemotron2024} receives structured vision evidence, zone context, and safety reference text. It returns a JSON action object with priority (none/monitor/intervene/stop\_work), supervisor action, rationale, and recommended steps. Priority levels map to operational responses: stop-work for critical PPE violations in active zones, monitor for fatigue screening flags.
+
+\subsection{Audit Log}
+
+Every scan stores: timestamp, zone, vision JSON, compliance breakdown, Nemotron action, and provider metadata in SQLite. This enables traceability for supervisors, regulators, and post-incident review.

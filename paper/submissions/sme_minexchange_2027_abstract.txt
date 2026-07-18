@@ -1,0 +1,62 @@
+# DEPRIORITIZED — SME MINEXCHANGE 2027
+
+Status: Not pursuing. Mandatory in-person presentation in Denver, USA;
+US visa barriers (security deposit etc.) make attendance unreliable.
+Goal is PhD application in XAI/NLP, not mining industry entry.
+
+Archived draft below for reference only. Do not submit unless circumstances change.
+
+---
+
+================================================================================
+KEY DATES
+================================================================================
+
+August 1, 2026      Abstracts submission deadline (100 words)
+October 31, 2026    Authors notified of acceptance
+November 15, 2026   Final manuscripts due (OPTIONAL — not mandatory)
+                      Presentations of accepted abstracts ARE mandatory
+
+Conference: February 28 – March 3, 2027 | Denver, Colorado | Colorado Convention Center
+
+================================================================================
+100-WORD ABSTRACT (92 words)
+================================================================================
+
+Shift-start PPE checks in mining are often manual, inconsistent, and undocumented. Global computer vision systems flag missing hard hats even when workers enter surface areas where helmets are not required under zone-specific regulations. Northern Shift Guard is a three-layer vision-language framework for explainable, auditable shift-start screening. Structured vision evidence is checked against zone-specific PPE requirements, then reasoned into prioritized supervisor actions with full audit records. The same worker photo can produce different compliance outcomes for surface yard versus active stope zones. We present system architecture, evaluation design, and results from a deployed prototype.
+
+================================================================================
+SUGGESTED SESSION TRACK
+================================================================================
+
+Health & Safety / Mine Operations / Innovation & Technology
+
+================================================================================
+SUGGESTED TITLE
+================================================================================
+
+Northern Shift Guard: Zone-Aware Vision-Language Screening for Explainable Mining Shift-Start Safety
+
+================================================================================
+AUTHORS
+================================================================================
+
+Kaysarul Anas Apurba, NorthMind
+Kazeem Oguntade, NorthMind
+
+================================================================================
+KEYWORDS
+================================================================================
+
+PPE compliance, shift-start safety, explainable AI, zone-aware screening, mining safety, vision-language model, audit trail, Ontario Regulation 854
+
+================================================================================
+POST-ACCEPTANCE (if abstract accepted by Oct 31, 2026)
+================================================================================
+
+By November 15, 2026 (optional):
+  - Submit final manuscript if desired (not required for presentation)
+
+Before February 28, 2027 (mandatory):
+  - Prepare and deliver conference presentation
+  - Can use paper/ main.tex, eval results, and submission_media figures
